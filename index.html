@@ -1,0 +1,460 @@
+<html>
+<head>
+	<meta name="author" content="Hussein Amar">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name='apple-mobile-web-app-capable' content='yes' />
+	<title>App - To Do</title>
+	<!-- Path to Framework7 Library CSS -->
+	<!-- <link rel="stylesheet" href="css/lib/framework7/framework7.min.css">
+	<link rel="stylesheet" href="css/lib/framework7/framework7.ios.min.css"> -->
+	<link rel="stylesheet" href="css/flickity.css">
+	<!-- Path to your custom app styles-->
+	<!-- <link rel="stylesheet" href="css/index.css"> -->
+
+<style>
+	* {
+		box-sizing: border-box;
+		-webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+	}
+
+	h1 {
+		font-size: 22px;
+		color: white;
+	}
+
+	html, body {
+		-webkit-touch-callout: none;				/* prevent callout to copy image, etc when tap to hold */
+		-webkit-text-size-adjust: none;			 /* prevent webkit from resizing text to fit */
+		-webkit-user-select: none;					/* prevent copy paste, to allow, change 'none' to 'text' */
+		padding: 0!important;
+		background: grey;
+		margin: 0!important;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		overscroll-behavior: none;
+		position: fixed;
+		color: white;
+		font-weight: 550;
+		font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+	}
+
+	.container {
+		/*background: #5e9feb;*/
+		/*width: 414px;*/
+		width: 100vw;
+		/*height: 736px;*/
+		height: 100vh;
+		/*border: 1px solid black;*/
+		/*overflow-y: hidden;*/
+		overflow-x: hidden;
+		background: #ffb554;
+		background:-webkit-linear-gradient(top, #ffb554, #fc6c6f);
+		background:	 -moz-linear-gradient(top, #ffb554, #fc6c6f);
+		background:	-ms-linear-gradient(top, #ffb554, #fc6c6f);
+		background:	 -o-linear-gradient(top, #ffb554, #fc6c6f);
+		background:		linear-gradient(to bottom, #ffb554, #fc6c6f);
+		padding: 0!important;
+		transition: margin-left .5s;
+	}
+
+	.container .content {
+		position: relative;
+		z-index: 0;
+		width: 100vw;
+		height: 100%!important;
+		overflow-y: scroll;
+		oveflow-x: hidden;
+		padding: 0!important;
+		overflow-scrolling: touch;
+		-webkit-overflow-scrolling: touch;
+		transition: transform 0.5s;
+	}
+	
+	.container, .menu-bar {
+		/*width: 414px;*/
+	}
+
+	.container .menu-bar {
+		position: absolute;
+		/*background: #ffad56;*/
+		background: rgba(255, 173, 86, 0);
+		width: 100%;
+		height: 7.5%;
+		border-bottom: 0px;
+		line-height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 100;
+		box-shadow: 0;
+		transition: margin-left .5s, background ease-in-out, box-shadow ease-in-out, border-bottom ease-in-out;
+	}
+
+	
+	.menu-elements-container {
+		display: table-cell;
+		vertical-align: middle;
+		padding: 0;
+	}
+
+	.menu-bar-element {
+		padding: 0;
+		float: left;
+		width: auto;
+	}
+
+	.menu-bar-menu-icon {
+		position: absolute;
+		left: 30px;
+		filter: invert(92%) sepia(100%) saturate(31%) hue-rotate(62deg) brightness(106%) contrast(109%);
+		-webkit-filter: invert(92%) sepia(100%) saturate(31%) hue-rotate(62deg) brightness(106%) contrast(109%);
+	}
+
+	.menu-bar-title {
+		font-weight: 500;
+		font-size: 1.5rem;
+		position: relative;
+		line-height: 100%;
+	}
+	
+	.side-menu {
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 0;
+		overflow-y: hidden;
+		oveflow-x: hidden;
+		padding: 0!important;
+		transition: transform 0.5s ease-out;
+		background: pink;
+		transition: .5s ease-out;
+		z-index: 10;
+	}
+
+	.container .carousel {
+		position: relative;
+		width: 100%;
+		height: 60%;
+		background: rgba(0,0,0,0);
+		top: 36%;
+		left: 0;
+		/*border-top: 1px solid black;*/
+		padding: 0!important;
+		transition: width .5s;
+
+	}
+
+	.container .carousel .flickity-viewport {
+		position: relative;
+		top: 0;
+		left: 0;
+		z-index: 0;
+		height: 100%!important;
+		padding: 0!important;
+		width: 100%;
+		background: rgba(0,0,0,0);
+		/*touch-action: none!important;*/
+	}
+
+	.container .carousel .static-banner {
+		/*position: absolute;*/
+		/*position: relative;*/
+		/*top: 5%;*/
+		/*left: 16.25%;*/
+		/*left: 7.5%;*/
+		transform: translateX(10%);
+		z-index: 10;
+		text-transform: uppercase;
+		font-size: 0.95rem;
+		width: 90%;
+	}
+
+	.carousel .flickity-viewport .carousel-cell {
+		/*margin-right: 20px;*/
+		margin-right: 2.5%;
+		/*margin-top: 12.5%;*/
+		margin-top: 5%;
+		background: white;
+		counter-increment: carousel-cell;
+		/*width: 67.5%;*/
+		width: 85%;
+		height: 80%;
+		border-radius: 15px;
+		color: black;
+		box-shadow: 0 5px 5px rgba(0,0,0,0.5);
+		padding: 5%;
+		overflow-wrap: break-word;
+	}
+
+	/* cell number */
+	.flickity-viewport .carousel-cell:before {
+		display: block;
+		text-align: center;
+		line-height: 200px;
+		font-size: 80px;
+		color: white;
+		content: counter(carousel-cell);
+	}
+
+	.flickity-viewport .carousel-cell .carousel-cell-icons-container {
+		position: absolute;
+		top: 5vw;
+		right: 5vw;
+		height: auto;
+	}
+
+	.flickity-viewport .carousel-cell .carousel-cell-title {
+		color: rgb(50,50,50);
+		font-size: 1.25rem;
+
+	}
+
+	.flickity-viewport .carousel-cell .carousel-cell-subtitle {
+		color: rgba(50,50,50, 0.5);
+		font-size: 1.15rem;
+	}
+
+	.flickity-viewport .carousel-cell .carousel-cell-title-container {
+		position: absolute;
+		top: 54.636%;
+	}
+</style>
+</head>
+<body>
+<!-- SIDE MENU FOR NAVIGATION -->
+<div class="side-menu"></div>
+<!-- SIDE MENU END -->
+
+<!-- Content Container -->
+<div class="container">
+	<!-- Menu Bar -->
+	<div class="menu-bar">
+		<div class="menu-elements-container">
+			<a href="javascript:void(0);" onclick="openCloseMenu(this, false);" class="menu-bar-element menu-bar-menu-icon"><img src="https://img.icons8.com/material/24/000000/menu--v1.png"></a>
+			
+			<!-- Menu Bar Label -->
+			<div class="menu-bar-element menu-bar-title">To Do</div>
+		</div>
+	</div>
+	<!-- Menu Bar End -->
+
+	<!-- ALL CONTENT COMES INSIDE THIS DIV! -->
+	<div class="content">
+	
+		<!-- Carousel for Cards -->
+		<div class="carousel first-app-element" data-flickity='{ "cellAlign": "center", "prevNextButtons": false, "pageDots": false, "dragThreshold": 30, "cellSelector": ".carousel-cell", "draggable": ">1" }'>
+			<div class="static-banner">Today: December 15, 2019</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">100 Tasks</div>
+					<div class="carousel-cell-title">Rechnerorganisation</div>
+				</div>
+			</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">15 Tasks</div>
+					<div class="carousel-cell-title">Lineare Algebra</div>
+				</div>
+			</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">12 Tasks</div>
+					<div class="carousel-cell-title">Rechnerorganisation Praktikum</div>
+				</div>
+			</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">9 Tasks</div>
+					<div class="carousel-cell-title">Analysis I</div>
+				</div>
+			</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">12 Tasks</div>
+					<div class="carousel-cell-title">Grundlagen der Elektrotechnik</div>
+				</div>
+			</div>
+
+			<div class="carousel-cell">
+				<div class="carousel-cell-icons-container">
+					<div class="carousel-cell-icon"><img src="https://img.icons8.com/material/24/000000/menu-2--v1.png"></div>
+				</div>
+				<div class="carousel-cell-title-container">
+					<div class="carousel-cell-subtitle">11 Tasks</div>
+					<div class="carousel-cell-title">Systemprogrammierung</div>
+				</div>
+			</div>
+		</div>
+		<!-- Carousel End -->
+		
+		<!-- Some other content to make content div long enough for scrolling - testing purposes only!!!! -->
+		<div style="position: relative; top: 1000px;">
+			<p>Only used to show scroll effect.</p>
+		</div>
+		<!-- test div end -->
+	</div>
+	<!-- Content END -->
+</div>
+<!-- container END -->
+
+
+<script src="js/flickity.pkgd.js"></script>
+<!-- <script src="js/jquery-3.4.1.slim.min.js"></script> -->
+
+
+<script>
+// listens to Menu Bar Title press
+document.querySelector(".menu-bar-title").addEventListener("click", function() {
+	document.querySelector(".container .content").scrollTop = 0;
+});
+
+// listens to scroll event to set the border and shadow of menu
+document.querySelector(".container .content").addEventListener("scroll", function() {
+	setMenuBarBorderShadow(document.querySelector(".container .content"), 0, 200);
+});
+
+// listens to scroll event of slider, should prevent vertical scroll when sliding
+// needs timeout because flickity might need some time to
+// create carousel viewport div (depending on internet speed)
+// not working properly, needs ammending
+// sometimes vertical scroll still frozen after touchend!!!!
+setTimeout(function() {
+	document.querySelector(".carousel .flickity-viewport").addEventListener("touchmove", function(e) {
+		
+		// carousel components
+		var carousel = document.querySelector(".carousel .flickity-viewport");
+		var slider = document.querySelector(".carousel .flickity-viewport .flickity-slider");
+		
+		// style of carousel components
+		var carouselStyle = carousel.getAttribute("style");
+		var sliderStyle = slider.getAttribute("style");
+		
+		// if the slider is being moved, the translateX of slider becomes translate3D,
+		// we can use this to check if the slider is scrolled horizontally
+		// and prevent vertical scroll
+		if ( sliderStyle.search("translateX") == -1 ) {
+			document.querySelector(".container .content").style.overflowY = "hidden";
+			carouselStyle = carouselStyle.replace("pan-y", "none");
+			carousel.setAttribute("style", carouselStyle);
+			console.log("test");
+
+		}
+
+		// needed to allow vertical scroll so we can scroll down even if touching slider
+		carousel.addEventListener("touchend", function() {
+			//if ( sliderStyle.search("translateX") == -1 ) {
+				document.querySelector(".container .content").style.overflowY = "scroll";
+				carouselStyle = carouselStyle.replace("none", "pan-y");
+				carousel.setAttribute("style", carouselStyle);
+			//}
+		}, true);
+	}, true);
+}, 1500);
+
+
+// uses scroll amount of main element being scrolled (typically going to be main window)
+// to progressively/intervally set the border, shadow, background of menu bar
+function setMenuBarBorderShadow(divBeingScrolled, startPos, endPos) {
+	if ( divBeingScrolled.scrollTop < endPos ) {
+
+		var background = "#ffad56";
+
+		// needed to dynamically change value of border and shadow
+		var borderBottom = "";
+		var boxShadow = "";
+
+		// number of steps in interval [startPos, endPos]
+		var numSteps = (endPos - startPos) / 5;
+
+		// value per step
+		var borderBottomStepValue = 0.8 / numSteps;
+		var boxShadowStepValue = 0.5 / numSteps;
+
+		var pos = 0 + startPos;
+
+		// multiplied with step values to calcualte opacities in while loop
+		var iteration = 0;
+
+		// repeat while the position (starting at startPos) stays less than end position
+		// calculates border and shadow opacity using step value of each, then sets
+		// them accordingly
+		while ( pos < endPos ) {
+			borderBottom = "1px solid rgba(0,0,0," + (borderBottomStepValue*iteration) + ")";
+			boxShadow = "0 1px 5px rgba(0,0,0," + (boxShadowStepValue*iteration) + ")";
+
+			// sets border and shadow opacity and background
+			if ( divBeingScrolled.scrollTop >= pos && divBeingScrolled.scrollTop < pos + 5 ) {
+				document.querySelector(".menu-bar").style.borderBottom = borderBottom;
+				document.querySelector(".menu-bar").style.boxShadow = boxShadow;
+
+				if ( divBeingScrolled.scrollTop != 0 )
+					document.querySelector(".menu-bar").style.background = background;
+
+				// special case of scroll position 0, then make background transparent
+				else
+					document.querySelector(".container .menu-bar").style.background = "rgba(0,0,0,0)";
+
+				break;
+			}
+
+			iteration++;
+			pos += 5;
+		}
+	}
+}
+
+// opens and closes side menu (side menu not yet implemented)
+function openCloseMenu(caller, menuShowing) {
+	var transform = "";
+	var sideMenu = document.querySelector(".side-menu");
+	
+	// side menu is closed, so opens it (needs ammending after adding side menu)
+	if ( menuShowing == false ) {
+		transform = "perspective(450px) rotateY(-45deg)";
+		caller.setAttribute("onclick", "openCloseMenu(this, true);");
+		document.querySelector(".container .content").style.transform = transform;
+	
+	// side menu is already open, so closes it (needs ammending after adding side menu)
+	} else {
+		transform = "";
+		caller.setAttribute("onclick", "openCloseMenu(this, false);");
+		document.querySelector(" .content").style.transform = transform;		
+	}
+}
+
+// needed later for changing background color using slider
+// put it into a function!
+for (var i = 0; i < 5; i++) {
+    var cells = document.getElementsByClassName("carousel-cell");
+    if ( cells[i].getAttribute("aria-hidden") != "true" ) {
+      alert("Stop! " + i);
+      break;
+    }
+  }
+</script>
+
+</body>
+</html>
